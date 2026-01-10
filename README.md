@@ -321,10 +321,6 @@ npm start
 - Claude Code CLI installed and configured
 - code-simplifier plugin (if not installed, the loop will warn but continue)
 
-## License
-
-MIT
-
 ## Contributing
 
 Feel free to open issues or submit pull requests!
