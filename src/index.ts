@@ -16,7 +16,7 @@ program
   .option('-p, --prompt <prompt>', 'The prompt to run in each iteration')
   .option('-f, --file <path>', 'Read prompt from a markdown file')
   .option('-m, --max-iterations <number>', 'Maximum number of iterations', '5')
-  .option('--model <model>', 'Claude model to use (sonnet, opus, haiku)')
+  .option('--model <model>', 'Claude model to use (sonnet, opus, haiku)', 'opus')
   .option('-s, --stop <condition>', 'Stop condition (string to search for in output)')
   .option('-d, --work-dir <path>', 'Working directory for Claude Code', process.cwd())
   .option('--skip-simplifier', 'Skip code simplification after each iteration', false)

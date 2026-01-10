@@ -180,7 +180,7 @@ ralph-loop \
 | `--prompt` | `-p` | The prompt to run in each iteration (required unless --file is used) | - |
 | `--file` | `-f` | Read prompt from a markdown file (required unless --prompt is used) | - |
 | `--max-iterations` | `-m` | Maximum number of iterations | `5` |
-| `--model` | - | Claude model to use: `sonnet`, `opus`, or `haiku` | Default model |
+| `--model` | - | Claude model to use: `sonnet`, `opus`, or `haiku` | `opus` |
 | `--stop` | `-s` | Stop condition (string to search for in output) | - |
 | `--work-dir` | `-d` | Working directory for Claude Code | Current directory |
 | `--skip-simplifier` | - | Skip code simplification after each iteration | `false` |
