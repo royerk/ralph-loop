@@ -5,6 +5,7 @@ A beautiful CLI tool that runs Claude Code in an iterative loop with automatic c
 ## Features
 
 - 🔄 **Iterative Claude Code Execution**: Run Claude Code multiple times with the same prompt
+- 📄 **File-based Prompts**: Load prompts from markdown files for complex or reusable instructions
 - 🎨 **Pretty CLI**: Colorful output with progress indicators and beautiful formatting
 - 🛑 **Smart Stop Conditions**: Automatically stop when a specific condition is met
 - 🧹 **Automatic Code Simplification**: Uses the code-simplifier plugin after each iteration
@@ -84,6 +85,24 @@ Or for local development:
 npm run dev -- -p "Add error handling to all functions"
 ```
 
+### Using a Prompt File
+
+For longer or reusable prompts, you can store them in a markdown file:
+
+```bash
+# Create a prompt file
+echo "Add comprehensive error handling to all functions.
+Include try-catch blocks and proper error messages." > my-prompt.md
+
+# Use it with the loop
+ralph-loop -f my-prompt.md -m 3
+```
+
+This is especially useful for:
+- Complex, multi-line prompts
+- Reusable prompts you run frequently
+- Prompts with detailed instructions
+
 ### With Maximum Iterations
 
 ```bash
@@ -118,10 +137,13 @@ ralph-loop \
 
 | Option | Alias | Description | Default |
 |--------|-------|-------------|---------|
-| `--prompt` | `-p` | The prompt to run in each iteration (required) | - |
+| `--prompt` | `-p` | The prompt to run in each iteration (required unless --file is used) | - |
+| `--file` | `-f` | Read prompt from a markdown file (required unless --prompt is used) | - |
 | `--max-iterations` | `-m` | Maximum number of iterations | `5` |
 | `--stop` | `-s` | Stop condition (string to search for in output) | - |
 | `--work-dir` | `-d` | Working directory for Claude Code | Current directory |
+
+**Note:** You must provide either `--prompt` or `--file`, but not both.
 
 ## How It Works
 
@@ -146,9 +168,25 @@ ralph-loop/
 │   ├── loop.ts           # Main loop logic with pretty output
 │   ├── claude-runner.ts  # Claude Code execution wrapper
 │   └── types.ts          # TypeScript type definitions
+├── examples/
+│   ├── refactor-prompt.md   # Example comprehensive prompt
+│   └── simple-prompt.md     # Example simple prompt
 ├── package.json
 ├── tsconfig.json
 └── README.md
+```
+
+## Example Prompts
+
+Check out the `examples/` directory for sample prompt files:
+
+- **simple-prompt.md**: A straightforward prompt for adding error handling
+- **refactor-prompt.md**: A comprehensive prompt with multiple refactoring tasks
+
+Use them like this:
+
+```bash
+ralph-loop -f examples/refactor-prompt.md -m 5
 ```
 
 ## Development
