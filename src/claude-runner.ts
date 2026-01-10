@@ -1,13 +1,17 @@
 import { spawn } from 'child_process';
-import { ClaudeCodeOptions } from './types.js';
+import { ClaudeCodeOptions, ClaudeModel } from './types.js';
 
 export class ClaudeRunner {
   private workDir: string;
   private autoCompact: boolean;
+  private model?: ClaudeModel;
+  private verbose: boolean;
 
   constructor(options: ClaudeCodeOptions) {
     this.workDir = options.workDir;
     this.autoCompact = options.autoCompact;
+    this.model = options.model;
+    this.verbose = options.verbose ?? false;
   }
 
   async runPrompt(prompt: string): Promise<{ output: string; error?: string }> {
@@ -26,6 +30,17 @@ export class ClaudeRunner {
       // Disable auto-compact if specified
       if (!this.autoCompact) {
         args.push('--no-auto-compact');
+      }
+
+      // Add model selection if specified
+      if (this.model) {
+        args.push('--model', this.model);
+      }
+
+      // Verbose logging
+      if (this.verbose) {
+        console.log(`[VERBOSE] Executing: claude ${args.join(' ')}`);
+        console.log(`[VERBOSE] Working directory: ${this.workDir}`);
       }
 
       const claude = spawn('claude', args, {
