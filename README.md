@@ -12,35 +12,82 @@ A beautiful CLI tool that runs Claude Code in an iterative loop with automatic c
 
 ## Installation
 
+### Global Installation (Recommended)
+
+Install globally to use `ralph-loop` from any directory:
+
+```bash
+# 1. Clone or navigate to the project
+cd /home/user/ralph-loop
+
+# 2. Install dependencies
+npm install
+
+# 3. Build and link globally (one command!)
+npm run install-global
+```
+
+Or step by step:
+
+```bash
+npm install
+npm run build
+npm link
+```
+
+Now you can use `ralph-loop` from anywhere:
+
+```bash
+cd ~/my-project
+ralph-loop -p "Add error handling to all functions"
+```
+
+### Local Installation
+
+For local development without global installation:
+
 ```bash
 npm install
 npm run build
 ```
 
-Or for development:
+Then use it with:
 
 ```bash
-npm install
+./dist/index.js -p "Your prompt"
+# or during development:
+npm run dev -- -p "Your prompt"
+```
+
+### Uninstall
+
+To uninstall the global command:
+
+```bash
+cd /home/user/ralph-loop
+npm run uninstall-global
 ```
 
 ## Usage
 
 ### Basic Usage
 
+If installed globally:
+
 ```bash
-npm run dev -- -p "Add error handling to all functions"
+ralph-loop -p "Add error handling to all functions"
 ```
 
-Or after building:
+Or for local development:
 
 ```bash
-./dist/index.js -p "Add error handling to all functions"
+npm run dev -- -p "Add error handling to all functions"
 ```
 
 ### With Maximum Iterations
 
 ```bash
-npm run dev -- -p "Refactor the codebase" -m 10
+ralph-loop -p "Refactor the codebase" -m 10
 ```
 
 ### With Stop Condition
@@ -48,19 +95,19 @@ npm run dev -- -p "Refactor the codebase" -m 10
 The loop will stop early if the output contains the stop condition string:
 
 ```bash
-npm run dev -- -p "Fix all bugs" -s "all tests passing"
+ralph-loop -p "Fix all bugs" -s "all tests passing"
 ```
 
 ### With Custom Working Directory
 
 ```bash
-npm run dev -- -p "Update documentation" -d /path/to/project
+ralph-loop -p "Update documentation" -d /path/to/project
 ```
 
 ### All Options
 
 ```bash
-npm run dev -- \
+ralph-loop \
   -p "Your prompt here" \
   -m 5 \
   -s "stop condition" \
