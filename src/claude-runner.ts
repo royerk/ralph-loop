@@ -25,7 +25,7 @@ export class ClaudeRunner {
 
   private executeClaudeCommand(message: string): Promise<{ output: string; error?: string }> {
     return new Promise((resolve) => {
-      const args = ['-m', message];
+      const args = ['-p', message];
 
       // Disable auto-compact if specified
       if (!this.autoCompact) {
