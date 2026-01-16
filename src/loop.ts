@@ -118,16 +118,11 @@ export class RalphWiggumLoop {
   }
 
   private truncateText(text: string, maxLength: number): string {
-    if (text.length <= maxLength) {
-      return text;
-    }
-    return text.substring(0, maxLength) + '...';
+    return text.length <= maxLength ? text : `${text.substring(0, maxLength)}...`;
   }
 
   private printHeader(): void {
-    const maxPromptLength = 100;
-    const prompt = this.config.prompt;
-    const truncatedPrompt = this.truncateText(prompt, maxPromptLength);
+    const truncatedPrompt = this.truncateText(this.config.prompt, 100);
 
     const lines = [
       chalk.bold.magenta('Ralph Wiggum Loop\n'),
@@ -173,11 +168,13 @@ export class RalphWiggumLoop {
   }
 
   private printStopMessage(iteration: number): void {
-    const message = chalk.bold.green('Stop condition met!') + '\n' +
-      chalk.white(`Stopped at iteration ${iteration}`);
+    const lines = [
+      chalk.bold.green('Stop condition met!'),
+      chalk.white(`Stopped at iteration ${iteration}`),
+    ].join('\n');
 
     console.log(
-      boxen(message, {
+      boxen(lines, {
         padding: 1,
         margin: 1,
         borderStyle: 'round',

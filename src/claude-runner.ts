@@ -6,6 +6,9 @@ interface CommandResult {
   error?: string;
 }
 
+const SIMPLIFIER_PROMPT =
+  'Please simplify the code using the code-simplifier plugin. Review all files and apply simplifications where appropriate.';
+
 export class ClaudeRunner {
   private readonly workDir: string;
   private readonly model?: ClaudeModel;
@@ -19,14 +22,12 @@ export class ClaudeRunner {
     this.dangerouslySkipPermissions = options.dangerouslySkipPermissions ?? false;
   }
 
-  runPrompt(prompt: string): Promise<CommandResult> {
+  async runPrompt(prompt: string): Promise<CommandResult> {
     return this.executeCommand(prompt);
   }
 
-  runSimplifier(): Promise<CommandResult> {
-    const simplifierPrompt =
-      'Please simplify the code using the code-simplifier plugin. Review all files and apply simplifications where appropriate.';
-    return this.executeCommand(simplifierPrompt);
+  async runSimplifier(): Promise<CommandResult> {
+    return this.executeCommand(SIMPLIFIER_PROMPT);
   }
 
   private executeCommand(message: string): Promise<CommandResult> {

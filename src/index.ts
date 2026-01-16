@@ -23,7 +23,7 @@ interface CliOptions {
 }
 
 function exitWithError(message: string): never {
-  console.error(chalk.red(message));
+  console.error(chalk.red(`Error: ${message}`));
   process.exit(1);
 }
 
@@ -40,7 +40,7 @@ async function loadPromptFromFile(filePath: string): Promise<string> {
 
 async function resolvePrompt(options: CliOptions): Promise<string> {
   if (options.prompt && options.file) {
-    exitWithError('Error: Cannot use both --prompt and --file at the same time');
+    exitWithError('Cannot use both --prompt and --file at the same time');
   }
 
   if (options.prompt) {
@@ -51,18 +51,18 @@ async function resolvePrompt(options: CliOptions): Promise<string> {
     return loadPromptFromFile(options.file);
   }
 
-  exitWithError('Error: Either --prompt or --file must be provided');
+  exitWithError('Either --prompt or --file must be provided');
 }
 
 function buildConfig(options: CliOptions, prompt: string): LoopConfig {
   const maxIterations = parseInt(options.maxIterations, 10);
 
   if (Number.isNaN(maxIterations) || maxIterations < 1) {
-    exitWithError('Error: max-iterations must be a positive number');
+    exitWithError('max-iterations must be a positive number');
   }
 
   if (!isValidModel(options.model)) {
-    exitWithError('Error: model must be one of: sonnet, opus, haiku');
+    exitWithError('model must be one of: sonnet, opus, haiku');
   }
 
   return {
@@ -102,7 +102,7 @@ program
       await loop.run();
     } catch (error) {
       const message = error instanceof Error ? error.message : String(error);
-      exitWithError(`Error: ${message}`);
+      exitWithError(message);
     }
   });
 
