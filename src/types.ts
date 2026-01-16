@@ -9,6 +9,7 @@ export interface LoopConfig {
   skipSimplifier?: boolean;
   verbose?: boolean;
   continueOnError?: boolean;
+  dangerouslySkipPermissions?: boolean;
 }
 
 export interface IterationResult {
@@ -20,8 +21,8 @@ export interface IterationResult {
 }
 
 export interface ClaudeCodeOptions {
-  autoCompact: boolean;
   workDir: string;
   model?: ClaudeModel;
   verbose?: boolean;
+  dangerouslySkipPermissions?: boolean;
 }

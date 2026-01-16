@@ -1,43 +1,38 @@
 import { spawn } from 'child_process';
 import { ClaudeCodeOptions, ClaudeModel } from './types.js';
 
+interface CommandResult {
+  output: string;
+  error?: string;
+}
+
 export class ClaudeRunner {
-  private workDir: string;
-  private autoCompact: boolean;
-  private model?: ClaudeModel;
-  private verbose: boolean;
+  private readonly workDir: string;
+  private readonly model?: ClaudeModel;
+  private readonly verbose: boolean;
+  private readonly dangerouslySkipPermissions: boolean;
 
   constructor(options: ClaudeCodeOptions) {
     this.workDir = options.workDir;
-    this.autoCompact = options.autoCompact;
     this.model = options.model;
     this.verbose = options.verbose ?? false;
+    this.dangerouslySkipPermissions = options.dangerouslySkipPermissions ?? false;
   }
 
-  async runPrompt(prompt: string): Promise<{ output: string; error?: string }> {
-    return this.executeClaudeCommand(prompt);
+  runPrompt(prompt: string): Promise<CommandResult> {
+    return this.executeCommand(prompt);
   }
 
-  async runSimplifier(): Promise<{ output: string; error?: string }> {
-    const simplifierPrompt = 'Please simplify the code using the code-simplifier plugin. Review all files and apply simplifications where appropriate.';
-    return this.executeClaudeCommand(simplifierPrompt);
+  runSimplifier(): Promise<CommandResult> {
+    const simplifierPrompt =
+      'Please simplify the code using the code-simplifier plugin. Review all files and apply simplifications where appropriate.';
+    return this.executeCommand(simplifierPrompt);
   }
 
-  private executeClaudeCommand(message: string): Promise<{ output: string; error?: string }> {
+  private executeCommand(message: string): Promise<CommandResult> {
     return new Promise((resolve) => {
-      const args = ['-p', message];
+      const args = this.buildCommandArgs(message);
 
-      // Disable auto-compact if specified
-      if (!this.autoCompact) {
-        args.push('--no-auto-compact');
-      }
-
-      // Add model selection if specified
-      if (this.model) {
-        args.push('--model', this.model);
-      }
-
-      // Verbose logging
       if (this.verbose) {
         console.log(`[VERBOSE] Executing: claude ${args.join(' ')}`);
         console.log(`[VERBOSE] Working directory: ${this.workDir}`);
@@ -46,20 +41,18 @@ export class ClaudeRunner {
       const claude = spawn('claude', args, {
         cwd: this.workDir,
         stdio: ['inherit', 'pipe', 'pipe'],
-        shell: true,
       });
 
       let stdout = '';
       let stderr = '';
 
-      claude.stdout?.on('data', (data) => {
+      claude.stdout.on('data', (data: Buffer) => {
         const chunk = data.toString();
         stdout += chunk;
-        // Stream output in real-time
         process.stdout.write(chunk);
       });
 
-      claude.stderr?.on('data', (data) => {
+      claude.stderr.on('data', (data: Buffer) => {
         const chunk = data.toString();
         stderr += chunk;
         process.stderr.write(chunk);
@@ -77,5 +70,19 @@ export class ClaudeRunner {
         resolve({ output: stdout, error: err.message });
       });
     });
+  }
+
+  private buildCommandArgs(message: string): string[] {
+    const args = ['-p', message];
+
+    if (this.dangerouslySkipPermissions) {
+      args.push('--dangerously-skip-permissions');
+    }
+
+    if (this.model) {
+      args.push('--model', this.model);
+    }
+
+    return args;
   }
 }
