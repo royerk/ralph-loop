@@ -7,6 +7,8 @@ A beautiful CLI tool that runs Claude Code in an iterative loop with automatic c
 - 🔄 **Iterative Claude Code Execution**: Run Claude Code multiple times with the same prompt
 - 📄 **File-based Prompts**: Load prompts from markdown files for complex or reusable instructions
 - 🤖 **Model Selection**: Choose between Sonnet, Opus, or Haiku for each loop
+- 🔌 **Plugin Support**: Enable Claude Code plugins like superpowers for enhanced capabilities
+- 🚀 **Delegation Mode**: Break work into parallel opus subagents for faster execution
 - 🎨 **Pretty CLI**: Colorful output with progress indicators and beautiful formatting
 - 🛑 **Smart Stop Conditions**: Automatically stop when a specific condition is met
 - 🧹 **Automatic Code Simplification**: Uses the code-simplifier plugin after each iteration (optional)
@@ -159,6 +161,45 @@ ralph-loop -p "Debug this issue" -v
 ralph-loop -p "Update documentation" -d /path/to/project
 ```
 
+### Using Plugins
+
+Enable Claude Code plugins like superpowers:
+
+```bash
+# Single plugin
+ralph-loop -p "Add tests" --plugins superpowers
+
+# Multiple plugins
+ralph-loop -p "Refactor code" --plugins "superpowers,code-simplifier"
+```
+
+Popular plugins:
+- `superpowers` - Enhanced capabilities for Claude
+- `code-simplifier` - Advanced code simplification
+- Custom plugins from your configuration
+
+### Delegation Mode (Parallel Subagents)
+
+Enable delegation to break work into parallel opus subagents:
+
+```bash
+ralph-loop -p "Large refactoring task" --delegate -m 3
+```
+
+How it works:
+1. **Planning**: Claude breaks down your prompt into 2-4 independent parallel tasks
+2. **Execution**: Each task runs simultaneously in separate opus subagents
+3. **Merging**: Results are combined into a cohesive summary
+4. **Simplification**: Code simplifier runs on the merged result (unless skipped)
+
+Perfect for:
+- Large refactoring projects
+- Multi-component updates
+- Independent feature implementations
+- Batch processing tasks
+
+**Note:** Delegation uses opus for all subagents to ensure high-quality parallel work.
+
 ### All Options
 
 ```bash
@@ -168,6 +209,8 @@ ralph-loop \
   --model sonnet \
   -s "stop condition" \
   -d /path/to/workdir \
+  --plugins "superpowers,code-simplifier" \
+  --delegate \
   --skip-simplifier \
   --continue-on-error \
   -v
@@ -183,6 +226,8 @@ ralph-loop \
 | `--model` | - | Claude model to use: `sonnet`, `opus`, or `haiku` | `opus` |
 | `--stop` | `-s` | Stop condition (string to search for in output) | - |
 | `--work-dir` | `-d` | Working directory for Claude Code | Current directory |
+| `--plugins` | - | Comma-separated list of plugins (e.g., "superpowers,code-simplifier") | - |
+| `--delegate` | - | Enable delegation mode with parallel opus subagents | `false` |
 | `--skip-simplifier` | - | Skip code simplification after each iteration | `false` |
 | `--continue-on-error` | - | Continue iterations even if one fails | `false` |
 | `--verbose` | `-v` | Enable verbose logging | `false` |
@@ -190,6 +235,8 @@ ralph-loop \
 **Notes:**
 - You must provide either `--prompt` or `--file`, but not both.
 - Model options: `sonnet` (balanced), `opus` (most capable), `haiku` (fastest)
+- Delegation mode always uses `opus` for subagents regardless of the `--model` setting
+- Plugins must be installed and configured in your Claude Code setup
 
 ## How It Works
 
@@ -250,7 +297,7 @@ ralph-loop -p "Add comprehensive tests" -m 3 --model haiku -v
 
 1. **Automated Refactoring Workflows**
    ```bash
-   ralph-loop -f cleanup-prompt.md -m 5 --continue-on-error
+   ralph-loop -f cleanup-prompt.md -m 5 --continue-on-error --plugins superpowers
    ```
 
 2. **Iterative Code Improvements**
@@ -263,6 +310,11 @@ ralph-loop -p "Add comprehensive tests" -m 3 --model haiku -v
    ralph-loop -p "Update all documentation" -s "all docs updated" -m 20
    ```
 
+4. **Parallel Large-Scale Refactoring**
+   ```bash
+   ralph-loop -p "Refactor entire codebase for better patterns" --delegate -m 3 --plugins superpowers
+   ```
+
 ### Tips for Claude Usage
 
 - Use `--verbose` to see what's happening in each iteration
@@ -270,6 +322,9 @@ ralph-loop -p "Add comprehensive tests" -m 3 --model haiku -v
 - Use `--skip-simplifier` if you're handling simplification separately
 - Use `-f` with prompt files for complex, multi-step instructions
 - Combine with `--model haiku` for faster iterations
+- Use `--plugins superpowers` for enhanced capabilities
+- Use `--delegate` for large tasks that can be parallelized
+- Delegation works best with prompts that can be broken into independent subtasks
 
 ## Development
 

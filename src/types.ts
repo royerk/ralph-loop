@@ -9,6 +9,8 @@ export interface LoopConfig {
   skipSimplifier?: boolean;
   verbose?: boolean;
   continueOnError?: boolean;
+  plugins?: string[];
+  delegate?: boolean;
 }
 
 export interface IterationResult {
@@ -24,4 +26,5 @@ export interface ClaudeCodeOptions {
   workDir: string;
   model?: ClaudeModel;
   verbose?: boolean;
+  plugins?: string[];
 }

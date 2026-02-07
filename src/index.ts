@@ -21,6 +21,8 @@ program
   .option('-d, --work-dir <path>', 'Working directory for Claude Code', process.cwd())
   .option('--skip-simplifier', 'Skip code simplification after each iteration', false)
   .option('--continue-on-error', 'Continue iterations even if one fails', false)
+  .option('--plugins <plugins>', 'Comma-separated list of plugins to use (e.g., "superpowers,code-simplifier")')
+  .option('--delegate', 'Enable delegation mode with parallel opus subagents', false)
   .option('-v, --verbose', 'Enable verbose logging', false)
   .action(async (options) => {
     try {
@@ -54,6 +56,9 @@ program
         process.exit(1);
       }
 
+      // Parse plugins if provided
+      const plugins = options.plugins ? options.plugins.split(',').map((p: string) => p.trim()) : undefined;
+
       const config: LoopConfig = {
         prompt,
         maxIterations: parseInt(options.maxIterations, 10),
@@ -63,6 +68,8 @@ program
         skipSimplifier: options.skipSimplifier,
         verbose: options.verbose,
         continueOnError: options.continueOnError,
+        plugins,
+        delegate: options.delegate,
       };
 
       // Validate max iterations
